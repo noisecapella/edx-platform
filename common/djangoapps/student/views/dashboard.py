@@ -13,6 +13,7 @@ from django.core.urlresolvers import NoReverseMatch, reverse, reverse_lazy
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+
 from opaque_keys.edx.keys import CourseKey
 from pytz import UTC
 from six import text_type, iteritems
@@ -49,6 +50,7 @@ from student.models import (
 )
 from util.milestones_helpers import get_pre_requisite_courses_not_completed
 from xmodule.modulestore.django import modulestore
+from lms.djangoapps.completion.utils import get_url_to_last_completed_block
 
 log = logging.getLogger("edx.student")
 
@@ -453,6 +455,17 @@ def _credit_statuses(user, course_enrollments):
     return statuses
 
 
+def _get_urls_for_resume_buttons(enrollments):
+    resume_button_urls = []
+    for enrollment in enrollments:
+        try:
+            urlToBlock = get_url_to_last_completed_block(user, enrollment)
+        except:
+            urlToBlock = 'dashboard'
+        resume_button_urls.append(urlToBlock)
+    return resume_button_urls
+
+
 @login_required
 @ensure_csrf_cookie
 def student_dashboard(request):
@@ -468,11 +481,13 @@ def student_dashboard(request):
         The dashboard response.
 
     """
+    # import pudb.b
     user = request.user
     if not UserProfile.objects.filter(user=user).exists():
         return redirect(reverse('account_settings'))
 
     platform_name = configuration_helpers.get_value("platform_name", settings.PLATFORM_NAME)
+
     enable_verified_certificates = configuration_helpers.get_value(
         'ENABLE_VERIFIED_CERTIFICATES',
         settings.FEATURES.get('ENABLE_VERIFIED_CERTIFICATES')
@@ -707,7 +722,11 @@ def student_dashboard(request):
             enr for enr in course_enrollments if entitlement.enrollment_course_run.course_id != enr.course_id
         ]
 
+    # Gather urls for resume buttons in course cards.
+    course_card_resume_button_urls = _get_urls_for_resume_buttons(course_enrollments + course_entitlements)
+
     context = {
+        'resume_blocks': course_card_resume_button_urls,
         'urls': urls,
         'programs_data': programs_data,
         'enterprise_message': enterprise_message,
