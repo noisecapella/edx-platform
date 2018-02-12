@@ -57,7 +57,7 @@
                  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 second-div-border ">
                         <div class="row full-height">
                             <div class="col-lg-12 col-md-12 col-sm-10 full-height">
-                                  <h2 class="heading">More Information</h2>
+                                  <h2 class="heading">Legal</h2>
                                     <ul class="list-unstyled clear-margins  ">
                                         % for link in footer["more_info_links"]:
                                         <li>
@@ -132,8 +132,8 @@
                                   <br/>
                                   ${_(
 
-                                  u"EdX, Open edX, and MicroMasters are trademarks of edX Inc., "
-                                  u"registered in the U.S. and other countries."
+                                  u"EdX, Open edX, and MicroMasters are registered trademarks of edX Inc. 粤ICP备17044299号-2. "
+
                                   )}
                                   ${u" | {icp}".format(icp=getattr(settings,'ICP_LICENSE')) if getattr(settings,'ICP_LICENSE',False) else ""}
                               </p>

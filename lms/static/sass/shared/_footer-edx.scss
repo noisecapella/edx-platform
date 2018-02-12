@@ -108,7 +108,7 @@ footer#footer-edx-v3 {
     margin-top: $baseline*1.5;
     height: auto;
 
-    @include margin-left($baseline*0.25)
+    @include margin-left($baseline*0.25);
   }
 
   ul.social li {
