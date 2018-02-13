@@ -16,18 +16,19 @@ from openedx.core.djangolib.markup import HTML, Text
     % if blocks.get('children'):
         <ol class="block-tree accordion" role="presentation">
             % for section in blocks.get('children'):
+                <% section_is_auto_opened = section.get('resume_block') is True %>
                 <li
                     class="outline-item section"
                     role="heading"
                 >
                     <button class="section-name accordion-trigger"
-                            aria-expanded="false"
+                            aria-expanded="${ 'true' if section_is_auto_opened else 'false' }"
                             aria-controls="${ section['id'] }_contents"
                             id="${ section['id'] }">
-                        <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                        <span class="fa fa-chevron-right ${ 'fa-rotate-90' if section_is_auto_opened else '' }" aria-hidden="true"></span>
                         <h3 class="section-title">${ section['display_name'] }</h3>
                     </button>
-                    <ol class="outline-item accordion-panel is-hidden"
+                    <ol class="outline-item accordion-panel ${ '' if section_is_auto_opened else 'is-hidden' }"
                         id="${ section['id'] }_contents"
                         role="region"
                         aria-labelledby="${ section['id'] }"
@@ -36,6 +37,7 @@ from openedx.core.djangolib.markup import HTML, Text
                             <%
                                 gated_subsection = subsection['id'] in gated_content
                                 completed_prereqs = gated_content[subsection['id']]['completed_prereqs'] if gated_subsection else False
+                                subsection_is_auto_opened = subsection.get('resume_block') is True
                             %>
                             <li class="subsection accordion ${ 'current' if subsection['resume_block'] else '' }" role="heading">
                                 % if gated_subsection and not completed_prereqs:
@@ -45,7 +47,7 @@ from openedx.core.djangolib.markup import HTML, Text
                                 % else:
                                     <button class="subsection-text accordion-trigger"
                                             id="${ subsection['id'] }"
-                                            aria-expanded="false"
+                                            aria-expanded="${ 'true' if subsection_is_auto_opened else 'false' }"
                                             aria-controls="${ subsection['id'] }_contents"
                                     >
                                 % endif
@@ -76,7 +78,7 @@ from openedx.core.djangolib.markup import HTML, Text
                                             </div>
                                         % endif
                                     % else:
-                                        <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                                        <span class="fa fa-chevron-right ${ 'fa-rotate-90' if subsection_is_auto_opened else '' }" aria-hidden="true"></span>
                                         <span class="subsection-title">
                                             ${ subsection['display_name'] }
                                         </span>
@@ -140,7 +142,7 @@ from openedx.core.djangolib.markup import HTML, Text
                                   </div> <!-- /details -->
                                 </button> <!-- /subsection-text -->
                                 % if not gated_subsection or (gated_subsection and completed_prereqs):
-                                    <ol class="outline-item accordion-panel is-hidden"
+                                    <ol class="outline-item accordion-panel ${ '' if subsection_is_auto_opened else 'is-hidden' }"
                                              id="${ subsection['id'] }_contents"
                                              role="region"
                                              aria-labelledby="${ subsection['id'] }"
