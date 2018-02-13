@@ -274,6 +274,7 @@ def _footer_more_info_links():
         ("privacy_policy", marketing_link("PRIVACY"), _("Privacy Policy")),
         ("accessibility_policy", marketing_link("ACCESSIBILITY"), _("Accessibility Policy")),
         ("sitemap", marketing_link("SITE_MAP"), _("Sitemap")),
+        ("trademarks", marketing_link("TRADEMARKS"), _("Trademarks")),
     ]
 
     # Backwards compatibility: If a combined "terms of service and honor code"

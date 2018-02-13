@@ -66,6 +66,7 @@ MKTG_URLS = {
     'ROOT': MARKETING_SITE_ROOT,
     'SCHOOLS': '/schools-partners',
     'SITE_MAP': '/sitemap',
+    'TRADEMARKS': '/trademarks',
     'TOS': '/edx-terms-service',
     'TOS_AND_HONOR': '/edx-terms-service',
     'WHAT_IS_VERIFIED_CERT': '/verified-certificate',
