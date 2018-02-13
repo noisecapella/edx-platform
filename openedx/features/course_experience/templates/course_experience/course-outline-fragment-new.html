@@ -52,16 +52,11 @@ from openedx.core.djangolib.markup import HTML, Text
                                     >
                                 % endif
                                     ## Subsection title
-                                    % if gated_subsection:
-                                        % if completed_prereqs:
-                                            <span class="menu-icon icon fa fa-unlock"
-                                                aria-hidden="true">
-                                            </span>
-                                            <span class="subsection-title">
-                                                ${ subsection['display_name'] }
-                                            </span>
-                                            <span class="sr">&nbsp;${_("Unlocked")}</span>
-                                        % else:
+                                    % if gated_subsection and not completed_prereqs:
+                                        <button
+                                            class="prerequisite-button"
+                                            href="${ subsection['lms_web_url'] }"
+                                        >
                                             <span class="menu-icon icon fa fa-lock"
                                             aria-hidden="true">
                                             </span>
@@ -76,7 +71,7 @@ from openedx.core.djangolib.markup import HTML, Text
                                                     %>
                                                     ${ prerequisite_name }
                                             </div>
-                                        % endif
+                                        </button>
                                     % else:
                                         <span class="fa fa-chevron-right ${ 'fa-rotate-90' if subsection_is_auto_opened else '' }" aria-hidden="true"></span>
                                         <span class="subsection-title">
