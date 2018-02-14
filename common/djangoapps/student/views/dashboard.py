@@ -50,7 +50,7 @@ from student.models import (
 )
 from util.milestones_helpers import get_pre_requisite_courses_not_completed
 from xmodule.modulestore.django import modulestore
-from lms.djangoapps.completion.utils import get_url_to_last_completed_block
+from lms.djangoapps.completion.utils import get_url_to_last_completed_block, UnavailableCompletionData
 
 log = logging.getLogger("edx.student")
 
@@ -455,13 +455,11 @@ def _credit_statuses(user, course_enrollments):
     return statuses
 
 
-def _get_urls_for_resume_buttons(enrollments):
+def _get_urls_for_resume_buttons(user, enrollments):
+    # Throws UnavailableCompletionData
     resume_button_urls = []
     for enrollment in enrollments:
-        try:
-            urlToBlock = get_url_to_last_completed_block(user, enrollment)
-        except:
-            urlToBlock = 'dashboard'
+        urlToBlock = get_url_to_last_completed_block(user, enrollment)
         resume_button_urls.append(urlToBlock)
     return resume_button_urls
 
@@ -722,11 +720,8 @@ def student_dashboard(request):
             enr for enr in course_enrollments if entitlement.enrollment_course_run.course_id != enr.course_id
         ]
 
-    # Gather urls for resume buttons in course cards.
-    course_card_resume_button_urls = _get_urls_for_resume_buttons(course_enrollments + course_entitlements)
 
     context = {
-        'resume_blocks': course_card_resume_button_urls,
         'urls': urls,
         'programs_data': programs_data,
         'enterprise_message': enterprise_message,
@@ -777,6 +772,16 @@ def student_dashboard(request):
             'use_ecommerce_payment_flow': True,
             'ecommerce_payment_page': ecommerce_service.payment_page_url(),
         })
+
+    # Gather urls for resume buttons in course cards.
+    try:
+        resume_button_urls = _get_urls_for_resume_buttons(user, course_enrollments + course_entitlements)
+        context.update({ 
+            'resume_buttons_are_available': True,
+            'resume_button_urls': resume_button_urls 
+        })
+    except UnavailableCompletionData:
+        context.update({ 'resume_buttons_are_available': False })
 
     response = render_to_response('dashboard.html', context)
     set_user_info_cookie(response, request)
