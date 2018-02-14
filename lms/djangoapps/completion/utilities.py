@@ -6,7 +6,7 @@ from lms.djangoapps.completion.models import BlockCompletion
 
 class UnavailableCompletionData(Exception):
     def __init__(self):
-        Exception.__init__(self, "User has not completed blocks in enrollment.")
+        Exception.__init__(self, "User's enrollment doesn't have completion data.")
 
 def get_url_to_last_completed_block(user, enrollment):
     '''Throws exception if LastCompletedBlock is None'''

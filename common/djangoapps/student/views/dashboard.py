@@ -479,7 +479,6 @@ def student_dashboard(request):
         The dashboard response.
 
     """
-    # import pudb.b
     user = request.user
     if not UserProfile.objects.filter(user=user).exists():
         return redirect(reverse('account_settings'))
@@ -782,6 +781,7 @@ def student_dashboard(request):
         })
     except UnavailableCompletionData:
         context.update({ 'resume_buttons_are_available': False })
+
 
     response = render_to_response('dashboard.html', context)
     set_user_info_cookie(response, request)
