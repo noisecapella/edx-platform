@@ -129,12 +129,7 @@ class VideoTranscripts(generics.RetrieveAPIView):
             # Fallback mechanism for edx-val transcripts
             transcript = None
             if feature_enabled:
-                transcript = get_video_transcript_content(
-                    language_code=lang,
-                    edx_video_id=video_descriptor.edx_video_id,
-                    youtube_id_1_0=video_descriptor.youtube_id_1_0,
-                    html5_sources=video_descriptor.html5_sources,
-                )
+                transcript = get_video_transcript_content(video_descriptor.edx_video_id, lang)
 
             if not transcript:
                 raise Http404(u'Transcript not found for {}, lang: {}'.format(block_id, lang))

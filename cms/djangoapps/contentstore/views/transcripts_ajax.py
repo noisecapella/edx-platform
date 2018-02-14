@@ -178,12 +178,7 @@ def download_transcripts(request):
         # Try searching in VAL for the transcript as a last resort
         transcript = None
         if is_val_transcript_feature_enabled_for_course(item.location.course_key):
-            transcript = get_video_transcript_content(
-                language_code=u'en',
-                edx_video_id=item.edx_video_id,
-                youtube_id_1_0=item.youtube_id_1_0,
-                html5_sources=item.html5_sources,
-            )
+            transcript = get_video_transcript_content(edx_video_id=item.edx_video_id, language_code=u'en')
 
         if not transcript:
             raise Http404
@@ -309,12 +304,7 @@ def check_transcripts(request):
     if command == 'not_found':
         # Try searching in VAL for the transcript as a last resort
         if is_val_transcript_feature_enabled_for_course(item.location.course_key):
-            video_transcript = get_video_transcript_content(
-                language_code=u'en',
-                edx_video_id=item.edx_video_id,
-                youtube_id_1_0=item.youtube_id_1_0,
-                html5_sources=item.html5_sources,
-            )
+            video_transcript = get_video_transcript_content(edx_video_id=item.edx_video_id, language_code=u'en')
             command = 'found' if video_transcript else command
 
     transcripts_presence.update({

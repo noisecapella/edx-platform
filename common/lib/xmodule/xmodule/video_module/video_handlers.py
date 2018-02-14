@@ -297,12 +297,7 @@ class VideoStudentViewHandlers(object):
                 response = self.get_static_transcript(request, transcripts)
                 if response.status_code == 404 and feature_enabled:
                     # Try to get transcript from edx-val as a last resort.
-                    transcript = get_video_transcript_content(
-                        language_code=self.transcript_language,
-                        edx_video_id=self.edx_video_id,
-                        youtube_id_1_0=self.youtube_id_1_0,
-                        html5_sources=self.html5_sources,
-                    )
+                    transcript = get_video_transcript_content(self.edx_video_id, self.transcript_language)
                     if transcript:
                         response = Response(
                             transcript['content'],
@@ -335,12 +330,7 @@ class VideoStudentViewHandlers(object):
                     if not lang:
                         lang = self.get_default_transcript_language(transcripts)
 
-                    transcript = get_video_transcript_content(
-                        language_code=lang,
-                        edx_video_id=self.edx_video_id,
-                        youtube_id_1_0=self.youtube_id_1_0,
-                        html5_sources=self.html5_sources,
-                    )
+                    transcript = get_video_transcript_content(edx_video_id=self.edx_video_id, language_code=lang)
                     if transcript:
                         transcript_content = Transcript.convert(
                             transcript['content'],
